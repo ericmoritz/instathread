@@ -66,28 +66,42 @@ code_change(_OldVsn, State, _Extra) ->
 %% ------------------------------------------------------------------
 -spec nodes(pid(), binary()) -> {ok, [term()]} | {error, any()}.
 nodes_internal(Client, RootKey) ->
-    {ok, [{1, Results}]} = riakc_pb_socket:mapred(
-			     Client,
-			     {index, <<"entries">>, {binary_index, "root"}, RootKey},
-			     [{map, {modfun, riak_kv_mapreduce, map_object_value}, undefined, false},
-			      {reduce, {modfun, riak_kv_mapreduce, reduce_set_union}, undefined, true}]
-			    ),
-    % TODO: Use binary_to_term map phase
-    Nodes = [binary_to_term(X) || X <- Results],
-    {ok, Nodes}.
+    {ok, Obj} = get_or_new(Client, RootKey),
+    NodeSet = node_set(riakc_obj:get_values(Obj)),
+    NodeList = sets:to_list(NodeSet),
+    SortedNodeList = lists:sort(
+		       fun(E1, E2) ->
+			       instathread_db_entry:key(E1) =< instathread_db_entry:key(E2)
+		       end,
+		      NodeList
+		      ),
+    {ok, SortedNodeList}.
 
 -spec put(pid(), term()) -> ok | {error, any()}.
 put_internal(Client, Entry) ->
-    Obj = riakc_obj:new(
-	    <<"entries">>,
-	    instathread_db_entry:key(Entry),
-	    term_to_binary(Entry)
-	   ),
-    MD = riakc_obj:set_secondary_index(
-	   dict:new(),
-	   {{binary_index, "root"}, [instathread_db_entry:root_key(Entry)]}
-	  ),
-    Obj1 = riakc_obj:update_metadata(Obj, MD),
-    riakc_pb_socket:put(Client, Obj1).
+    RootKey = instathread_db_entry:root_key(Entry),
+    {ok, Obj} = get_or_new(Client, RootKey),
+    NodeSet = node_set(riakc_obj:get_values(Obj)),
+    NodeSet2 = sets:add_element(Entry, NodeSet),
+    Obj2 = riakc_obj:update_value(Obj, term_to_binary(NodeSet2)),
+    riakc_pb_socket:put(Client, Obj2).
+       
 
+get_or_new(Client, RootKey) ->
+    get_or_new(
+      <<"entries">>,
+      RootKey, 
+      riakc_pb_socket:get(Client, <<"entries">>, RootKey)
+    ).
 
+get_or_new(_, _, {ok, Obj}) ->
+    {ok, Obj};
+get_or_new(Bucket, Key, {error, notfound}) ->
+    {ok, riakc_obj:new(Bucket, Key)};
+get_or_new(_,_, Other) ->
+    Other.
+
+node_set(Siblings) ->
+    sets:union(
+      [binary_to_term(X) || X <- Siblings]
+    ).

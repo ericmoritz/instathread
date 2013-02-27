@@ -14,13 +14,17 @@ main([]) ->
 	   Entry
 	  ),
 
-    [instathread_db_client:put(Client, instathread_db_entry:new(RootKey, EntryKey, <<"eric">>, <<"second">>)) || _ <- lists:seq(1, 2000)],
+    [instathread_db_client:put(Client, instathread_db_entry:new(RootKey, EntryKey, <<"eric">>, <<"second">>)) || _ <- lists:seq(1, 1000)],
 
-    {TS, {ok, Nodes}} = timer:tc(fun() -> 
+    {TS1, _} = timer:tc(fun() -> 
+			       instathread_db_client:put(Client, instathread_db_entry:new(RootKey, EntryKey, <<"eric">>, <<"second">>))
+		       end),
+
+    {TS2, {ok, Nodes}} = timer:tc(fun() -> 
 					 instathread_db_client:nodes(
 					   Client,
 					   RootKey
 					  )
 				 end),
-    io:format("~p ms~n", [TS / 1000]).
+    io:format("~p ~p ~p ms, ~p ms~n", [RootKey, length(Nodes), TS1 / 1000, TS2 / 1000]).
 	
