@@ -1,0 +1,21 @@
+<!doctype html>
+<html>
+<body>
+  <ol>
+    {% for node in nodes %}
+    <li>{{ node.author }}: {{ node.body }}</li>
+    {% endfor %}
+  </ol>
+
+  <h2>Create Thread</h2>
+  <form class="thread-reply"
+	action=""
+	method="POST"
+	enctype="application/x-www-form-urlencoded">
+    <div><input name="author" placeholder="author"/></div>
+    <div><textarea name="body" placeholder="body"></textarea></div>
+    <div><input type="submit" value="reply" /></div>
+  </form>
+
+</body>
+</html>

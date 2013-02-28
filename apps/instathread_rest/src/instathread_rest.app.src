@@ -1,0 +1,16 @@
+{application, instathread_rest,
+ [
+  {description, "The RESTful service for instathread"},
+  {vsn, "1"},
+  {registered, []},
+  {applications, [
+                  kernel,
+                  stdlib,
+		  sasl,
+		  apptools,
+		  instathread_db,
+		  cowboy
+                 ]},
+  {mod, { instathread_rest_app, []}},
+  {env, []}
+ ]}.

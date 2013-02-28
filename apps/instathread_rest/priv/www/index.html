@@ -1,0 +1,19 @@
+<!doctype html>
+<html>
+<body>
+  <h1>instathread REST service</h1>
+
+  <p>
+    This is the index of the instathread REST service
+  </p>
+
+  <h2>Create Thread</h2>
+  <form class="thread-create"
+	action="/v1/threads/"
+	method="POST"
+	enctype="application/x-www-form-urlencoded">
+    <div><input name="author" placeholder="author"/></div>
+    <div><textarea name="body" placeholder="body"></textarea></div>
+    <div><input type="submit" value="create" /></div>
+  </form>
+</body>
