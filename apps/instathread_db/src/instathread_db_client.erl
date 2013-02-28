@@ -8,9 +8,10 @@
 -record(state, {client}).
 
 -export([
+	 start_link/1,
 	 start_link/2,
-	 nodes/2,
-	 put/2
+	 nodes/1,
+	 put/1
 	]).
 
 %% ------------------------------------------------------------------
@@ -28,13 +29,22 @@
 start_link(Host, Port) ->
     gen_server:start_link(?MODULE, [Host, Port], []).
 
+start_link(Args) ->
+    gen_server:start_link(?MODULE, Args, []).    
 
-nodes(Pid, RootKey) ->
-    gen_server:call(Pid, {nodes, RootKey}).
+
+nodes(RootKey) ->
+    poolboy:transaction(?MODULE, 
+                        fun(Pid) ->
+                                gen_server:call(Pid, {nodes, RootKey})
+                        end).
 
 
-put(Pid, Entry) ->
-    gen_server:call(Pid, {put, Entry}).
+put(Entry) ->
+    poolboy:transaction(?MODULE, 
+                        fun(Pid) ->
+                                gen_server:call(Pid, {put, Entry})
+                        end).
 
 %% ------------------------------------------------------------------
 %% gen_server Function Definitions
@@ -64,7 +74,7 @@ code_change(_OldVsn, State, _Extra) ->
 %% ------------------------------------------------------------------
 %% Internal Function Definitions
 %% ------------------------------------------------------------------
--spec nodes(pid(), binary()) -> {ok, [term()]} | {error, notfound} | {error, any()}.
+-spec nodes_internal(pid(), binary()) -> {ok, [term()]} | {error, notfound} | {error, any()}.
 nodes_internal(Client, RootKey) ->
     case riakc_pb_socket:get(Client, <<"entries">>, RootKey) of
 	E={error, _} ->
@@ -81,7 +91,7 @@ nodes_internal(Client, RootKey) ->
 	    {ok, SortedNodeList}
     end.
 
--spec put(pid(), term()) -> ok | {error, any()}.
+-spec put_internal(pid(), term()) -> ok | {error, any()}.
 put_internal(Client, Entry) ->
     RootKey = instathread_db_entry:root_key(Entry),
     {ok, Obj} = get_or_new(Client, RootKey),

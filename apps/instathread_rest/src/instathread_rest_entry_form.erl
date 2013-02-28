@@ -7,22 +7,22 @@
 
 -module(instathread_rest_entry_form).
 
--export([create_entry/2, create_entry/3]).
+-export([create_entry/1, create_entry/2]).
 
-create_entry(Client, BodyResult) ->
+create_entry(BodyResult) ->
     DataResult = validate(BodyResult),
     EntryResult = form_to_entry(DataResult),
-    store_entry(Client, EntryResult).
+    store_entry(EntryResult).
 
-create_entry(Client, RootKey, BodyResult) ->
+create_entry(RootKey, BodyResult) ->
     DataResult = validate(BodyResult),
     EntryResult = form_to_entry(RootKey, DataResult),
-    store_entry(Client, EntryResult).
+    store_entry(EntryResult).
 
-store_entry(_, E={error, _}) ->
+store_entry(E={error, _}) ->
     E;
-store_entry(Client, {ok, Entry}) ->
-    case instathread_db_client:put(Client, Entry) of
+store_entry({ok, Entry}) ->
+    case instathread_db_client:put(Entry) of
 	ok ->
 	    {ok, Entry};
 	Error ->

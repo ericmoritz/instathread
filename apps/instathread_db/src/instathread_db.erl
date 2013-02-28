@@ -3,13 +3,12 @@
 %% ------------------------------------------------------------------
 %% API Function Exports
 %% ------------------------------------------------------------------
--export([start_link/0]).
+-export([start/0]).
 
 %% ------------------------------------------------------------------
 %% API Function Definitions
 %% ------------------------------------------------------------------
 
-start_link() ->
-    {ok, [Host, Port]} = application:get_env(instathread_db, riak),
-    instathread_db_client:start_link(Host, Port).
+start() ->
+    apptools:ensure_started(instathread_db, permanent).
 

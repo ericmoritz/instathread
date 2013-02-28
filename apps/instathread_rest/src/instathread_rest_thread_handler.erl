@@ -7,13 +7,13 @@
 
 -module(instathread_rest_thread_handler).
 
--record(state, {root_key, nodes, client, entry}).
+-record(state, {root_key, nodes, entry}).
 
 % Cowboy handler callbacks
 -export([init/3]).
 
 % Cowboy REST callbacks
--export([rest_init/2, service_available/2, allowed_methods/2]). 
+-export([rest_init/2, allowed_methods/2]). 
 
 % GET callbacks
 -export([resource_exists/2, content_types_provided/2, to_html/2]).
@@ -28,21 +28,12 @@ init(_Transport, _Req, _Opts) ->
 rest_init(Req, _Opts) ->
     {ok, Req, #state{}}.
 
-
-service_available(Req, State) ->
-    case instathread_db:start_link() of
-	{ok, Client} ->
-	    {true, Req, State#state{client=Client}};
-	{error, _} ->
-	    {false, Req, State}
-    end.
-
 allowed_methods(Req, State) ->
     {[<<"GET">>, <<"POST">>], Req, State}.
 
-resource_exists(Req, State=#state{client=C}) ->
+resource_exists(Req, State) ->
     {RootKey, Req2} = cowboy_req:binding(root_key, Req),
-    case instathread_db_client:nodes(C, RootKey) of
+    case instathread_db_client:nodes(RootKey) of
 	{error, notfound} ->
 	    {false, Req2, State};
 	{ok, Nodes} ->
@@ -70,9 +61,9 @@ content_types_accepted(Req, State) ->
       {{<<"application">>, <<"x-www-form-urlencoded">>, []}, create_reply}
      ], Req, State}.
 
-create_reply(Req, State=#state{root_key=RootKey, client=Client}) ->
+create_reply(Req, State=#state{root_key=RootKey}) ->
     BodyResult = cowboy_req:body_qs(Req),
-    case instathread_rest_entry_form:create_entry(Client, RootKey, BodyResult) of
+    case instathread_rest_entry_form:create_entry(RootKey, BodyResult) of
 	{ok, Entry} ->
 	    {ok, _, Req2} = BodyResult,
 	    {true, Req2, State#state{entry=Entry}};

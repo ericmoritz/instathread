@@ -6,10 +6,15 @@
   {registered, []},
   {applications, [
                   kernel,
-                  stdlib
+                  stdlib,
+                  poolboy
                  ]},
   {mod, { instathread_db_app, []}},
   {env, [
-	 {riak, ["127.0.0.1", 10017]}
-  ]}
+	 {pool, {
+            [{size, 10}, {max_overflow, 20}],
+            ["127.0.0.1", 10017]
+           }
+         }
+        ]}
  ]}.
