@@ -64,18 +64,22 @@ code_change(_OldVsn, State, _Extra) ->
 %% ------------------------------------------------------------------
 %% Internal Function Definitions
 %% ------------------------------------------------------------------
--spec nodes(pid(), binary()) -> {ok, [term()]} | {error, any()}.
+-spec nodes(pid(), binary()) -> {ok, [term()]} | {error, notfound} | {error, any()}.
 nodes_internal(Client, RootKey) ->
-    {ok, Obj} = get_or_new(Client, RootKey),
-    NodeSet = node_set(riakc_obj:get_values(Obj)),
-    NodeList = sets:to_list(NodeSet),
-    SortedNodeList = lists:sort(
-		       fun(E1, E2) ->
-			       instathread_db_entry:key(E1) =< instathread_db_entry:key(E2)
-		       end,
-		      NodeList
-		      ),
-    {ok, SortedNodeList}.
+    case riakc_pb_socket:get(Client, <<"entries">>, RootKey) of
+	E={error, _} ->
+	    E;
+	{ok, Obj} ->
+	    NodeSet = node_set(riakc_obj:get_values(Obj)),
+	    NodeList = sets:to_list(NodeSet),
+	    SortedNodeList = lists:sort(
+			       fun(E1, E2) ->
+				       instathread_db_entry:key(E1) =< instathread_db_entry:key(E2)
+			       end,
+			       NodeList
+			      ),
+	    {ok, SortedNodeList}
+    end.
 
 -spec put(pid(), term()) -> ok | {error, any()}.
 put_internal(Client, Entry) ->

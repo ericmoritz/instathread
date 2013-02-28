@@ -10,6 +10,6 @@
 %% ------------------------------------------------------------------
 
 start_link() ->
-    [Host, Port] = application:get_env(instathread_db, riak),
+    {ok, [Host, Port]} = application:get_env(instathread_db, riak),
     instathread_db_client:start_link(Host, Port).
 
