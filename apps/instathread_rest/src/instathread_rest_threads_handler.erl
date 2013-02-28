@@ -57,7 +57,7 @@ create_entry(Req, State=#state{client=Client}) ->
     BodyResult = cowboy_req:body_qs(Req),
     case instathread_rest_entry_form:create_entry(Client, BodyResult) of
 	{ok, Entry} ->
-	    % if store_entry returns ok then BodyResult and
+	    % if create_entry returns ok then BodyResult and
 	    % EntryResult are not errors so it is safe to unpack them.
 	    {ok, _, Req2} = BodyResult,
 	    {true, Req2, State#state{entry=Entry}};
