@@ -8,4 +8,4 @@ test: build
 	rebar eunit skip_deps=true
 
 shell:
-	erl +A 10 +K true -pa  deps/*/ebin ../*/ebin -s instathread_rest
+	erl +K true -pa  deps/*/ebin ../*/ebin -s instathread_rest
