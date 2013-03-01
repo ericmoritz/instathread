@@ -98,8 +98,16 @@ put_internal(Client, Entry) ->
     NodeSet = node_set(riakc_obj:get_values(Obj)),
     NodeSet2 = sets:add_element(Entry, NodeSet),
     Obj2 = riakc_obj:update_value(Obj, term_to_binary(NodeSet2)),
-    riakc_pb_socket:put(Client, Obj2).
+    RiakResult = riakc_pb_socket:put(Client, Obj2),
+    send_onchange(RootKey, RiakResult).
        
+% send the onchange message to subscribers
+% if riak's put was not an error
+send_onchange(_, E={error, _}) ->
+    E;
+send_onchange(RootKey, R) ->
+    instathread_subscriptions:onchange(RootKey),
+    R.
 
 get_or_new(Client, RootKey) ->
     get_or_new(

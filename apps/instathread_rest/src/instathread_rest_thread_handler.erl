@@ -45,10 +45,8 @@ content_types_provided(Req, State) ->
       {{<<"text">>, <<"html">>, []}, to_html}
       ], Req, State}.
 
-to_html(Req, State=#state{root_key=_RootKey, nodes=Nodes}) ->
-    Data = [
-	    {<<"nodes">>, nodes_data(Nodes)}
-	   ],
+to_html(Req, State=#state{root_key=RootKey, nodes=Nodes}) ->
+    Data = instathread_rest_thread_data:new(RootKey, Nodes),
     HTML = instathread_rest_templates:thread(Data),
     {HTML, Req, State}.
 
@@ -79,11 +77,3 @@ created_path(Req, State=#state{entry=Entry}) ->
 %%--------------------------------------------------------------------
 %% Internal
 %%--------------------------------------------------------------------
-nodes_data(Nodes) ->
-    [node_data(N) || N <- Nodes].
-
-node_data(Node) ->
-    [
-     {<<"author">>, instathread_db_entry:author(Node)},
-     {<<"body">>, instathread_db_entry:body(Node)}
-    ].

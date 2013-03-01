@@ -8,20 +8,37 @@
 -module(instathread_rest_urls).
 
 
--export([routes/0, thread/1]).
+-export([routes/0, thread/1, thread_poll/1]).
 
 
 routes() ->
     [
      index_route(),
      v1_threads_route(),
-     v1_thread_route()
+     v1_thread_route(),
+     v1_thread_poll_route()
     ].
 
-thread(Entry) ->
+thread(RootKey) when is_binary(RootKey) ->
     iolist_to_binary([
 		      "/v1/threads/",
-		      cowboy_http:urlencode(instathread_db_entry:root_key(Entry))
+		      cowboy_http:urlencode(RootKey)
+		     ]);
+thread(Entry) ->
+    thread(instathread_db_entry:root_key(Entry)).
+
+
+thread_poll(RootKey) when is_binary(RootKey) ->
+    iolist_to_binary([
+		      thread(RootKey),
+		      "/poll"
+		     ]);
+thread_poll(Entry) ->
+    SinceDate = instathread_db_entry:creation_date(Entry),
+    PollRoot  = thread_poll(instathread_db_entry:root_key(Entry)),
+    iolist_to_binary([
+		      PollRoot,
+		      "/", cowboy_http:urlencode(SinceDate)
 		     ]).
 
 %%--------------------------------------------------------------------
@@ -40,3 +57,6 @@ v1_threads_route() ->
 
 v1_thread_route() ->
     {"/v1/threads/:root_key", instathread_rest_thread_handler, []}.
+
+v1_thread_poll_route() ->
+    {"/v1/threads/:root_key/poll/:since", instathread_rest_thread_poll_handler, []}.

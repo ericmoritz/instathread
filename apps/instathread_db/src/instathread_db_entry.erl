@@ -2,6 +2,7 @@
 
 -ifdef(TEST).
 -include_lib("eunit/include/eunit.hrl").
+-export([entry/6]). % only exposed for testing
 -endif.
 
 %% ------------------------------------------------------------------
@@ -13,7 +14,7 @@
 -export([
     % constructor
     new/2, new/4,
-
+	 
     % loader
     load/1,
 
@@ -21,7 +22,7 @@
     set_author/2, set_body/2,
 
     % getters
-    root_key/1, key/1, parent_key/1, creation_date/1, author/1, body/1
+    root_key/1, key/1, parent_key/1, creation_date/1, timestamp/1, author/1, body/1
 ]).
 
 %% ------------------------------------------------------------------
@@ -98,6 +99,15 @@ creation_date(#entry_vsn1{properties=Props}) ->
     iso8601:format(
       proplists:get_value(timestamp, Props)
     ).
+
+%%--------------------------------------------------------------------
+%% @doc Return the entry's timestamp value
+%% The creation data is an ISO8601 formatted string
+%% @end
+%%--------------------------------------------------------------------
+-spec timestamp(entry()) -> timestamp().
+timestamp(#entry_vsn1{properties=Props}) ->
+    proplists:get_value(timestamp, Props).
 
 %%--------------------------------------------------------------------
 %% @doc Return the entry's author

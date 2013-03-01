@@ -6,7 +6,6 @@
   {applications, [
                   kernel,
                   stdlib,
-		  instathread_db,
 		  gproc
                  ]},
   {mod, { instathread_subscriptions_app, []}},

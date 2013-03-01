@@ -9,6 +9,7 @@
 		  sasl,
 		  apptools,
 		  instathread_db,
+		  instathread_subscriptions,	
 		  cowboy
                  ]},
   {mod, { instathread_rest_app, []}},
