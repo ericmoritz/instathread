@@ -1,0 +1,14 @@
+{application, instathread_subscriptions,
+ [
+  {description, ""},
+  {vsn, "1"},
+  {registered, []},
+  {applications, [
+                  kernel,
+                  stdlib,
+		  instathread_db,
+		  gproc
+                 ]},
+  {mod, { instathread_subscriptions_app, []}},
+  {env, []}
+ ]}.
