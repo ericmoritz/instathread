@@ -1,4 +1,4 @@
-%%% @author Eric Moritz <eric@eric-acer>
+%%% @author Eric Moritz <eric@themoritzfamily.com>
 %%% @copyright (C) 2013, Eric Moritz
 %%% @doc
 %%% The long poll thread handler
