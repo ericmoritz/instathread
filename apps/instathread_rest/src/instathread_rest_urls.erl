@@ -34,11 +34,11 @@ thread_poll(RootKey) when is_binary(RootKey) ->
 		      "/poll"
 		     ]);
 thread_poll(Entry) ->
-    SinceDate = instathread_db_entry:creation_date(Entry),
+    SinceKey = instathread_db_entry:key(Entry),
     PollRoot  = thread_poll(instathread_db_entry:root_key(Entry)),
     iolist_to_binary([
 		      PollRoot,
-		      "/", cowboy_http:urlencode(SinceDate)
+		      "/", cowboy_http:urlencode(SinceKey)
 		     ]).
 
 %%--------------------------------------------------------------------

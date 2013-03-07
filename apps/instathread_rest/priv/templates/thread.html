@@ -1,6 +1,8 @@
 <!doctype html>
 <html>
 <body>
+  <h1><a href="{{ thread_url }}" id="thread">Thread {{ rootkey }}</a></h1>
+
   <ol>
     {% for node in nodes %}
     <li>{{ node.author }}: {{ node.body }}</li>
