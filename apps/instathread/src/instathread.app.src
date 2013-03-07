@@ -1,0 +1,16 @@
+% -*- erlang -*-
+{application, instathread,
+ [
+  {description, ""},
+  {vsn, "1"},
+  {registered, []},
+  {applications, [
+                  kernel,
+                  stdlib,
+		  apptools,
+		  instathread_db,
+		  instathread_subscriptions,
+		  instathread_rest
+                 ]},
+  {env, []}
+ ]}.
