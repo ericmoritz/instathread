@@ -32,13 +32,12 @@ start_link(Host, Port) ->
 start_link(Args) ->
     gen_server:start_link(?MODULE, Args, []).    
 
-
+-spec nodes(binary()) -> {ok, [term()]} | {error, notfound} | {error, any()}.
 nodes(RootKey) ->
     poolboy:transaction(?MODULE, 
                         fun(Pid) ->
                                 gen_server:call(Pid, {nodes, RootKey})
                         end).
-
 
 put(Entry) ->
     poolboy:transaction(?MODULE, 
