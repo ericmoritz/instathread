@@ -1,4 +1,3 @@
-
 -module(instathread_rest_sup).
 
 -behaviour(supervisor).
@@ -26,18 +25,7 @@ start_link() ->
 init([]) ->
     %% Compile the templates
     erlydtl:compile_dir(template_dir(), instathread_rest_templates),
-
-    Port = 8000,
-
-    Dispatch = cowboy_router:compile([
-		{'_', instathread_rest_urls:routes()}
-	       ]),
-    
-    CowboySpec = ranch:child_spec(instathread_rest, 100, 
-				  ranch_tcp, [{port, Port}],
-				  cowboy_protocol, [{env, [{dispatch, Dispatch}]}]),
-
-    {ok, { {one_for_one, 1000, 3600}, [CowboySpec]} }.
+    {ok, { {one_for_one, 1000, 3600}, []} }.
 
 
 template_dir() ->
