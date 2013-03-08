@@ -1,0 +1,13 @@
+{application, instathread_web,
+ [
+  {description, ""},
+  {vsn, "1"},
+  {registered, []},
+  {applications, [
+                  kernel,
+                  stdlib,
+		  instathread_rest
+                 ]},
+  {mod, { instathread_web_app, []}},
+  {env, []}
+ ]}.
