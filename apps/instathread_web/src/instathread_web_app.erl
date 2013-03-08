@@ -22,13 +22,13 @@ stop(_State) ->
 %%%%
 port() ->
     port(
-      os:getenv("POST"),
+      os:getenv("PORT"),
       application:get_env(instathread_web, port)
      ).
 
 port(false, undefined) ->
     error("set $PORT or set the instathread_web apps port configuration parameter");
-port(OSVar, _) ->
-    OSVar;
-port(_, AppVar) ->
+port(OSVar, undefined) ->
+    list_to_integer(OSVar);
+port(false, AppVar) ->
     AppVar.
