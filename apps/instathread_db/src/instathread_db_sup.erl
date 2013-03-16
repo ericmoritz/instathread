@@ -24,11 +24,11 @@ start_link() ->
 %% ===================================================================
 
 init([]) ->
-    {ok, {SizeArgs, WorkerArgs}} = application:get_env(instathread_db, pool),
+    {ok, {PoolArgs, WorkerArgs}} = application:get_env(instathread_db, pool),
     PoolName = instathread_db_client,
     PoolSpec = poolboy:child_spec(
                  PoolName,
-                 [{name, {local, PoolName}}, {worker_module, instathread_db_client}] ++ SizeArgs,
+                 [{name, {local, PoolName}}] ++ PoolArgs,
                  WorkerArgs
                 ),
     {ok, { {one_for_one, 10, 10}, [PoolSpec]} }.
