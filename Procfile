@@ -1,0 +1,1 @@
+web: ./_rel/bin/instathread -noshell

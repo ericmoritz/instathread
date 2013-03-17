@@ -1,5 +1,4 @@
-% -*- erlang -*-
-{application, instathread,
+{application, instathread_web,
  [
   {description, ""},
   {vsn, "1"},
@@ -7,8 +6,9 @@
   {applications, [
                   kernel,
                   stdlib,
-		  apptools,
-		  instathread_web
+                  quickdraw,
+		  instathread_rest
                  ]},
+  {mod, { instathread_web_app, []}},
   {env, []}
  ]}.

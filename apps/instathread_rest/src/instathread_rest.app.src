@@ -10,6 +10,7 @@
 		  apptools,
 		  instathread_db,
 		  instathread_subscriptions,	
+                  erlydtl,
 		  cowboy
                  ]},
   {mod, { instathread_rest_app, []}},

@@ -25,7 +25,7 @@ store_entry({ok, Entry}) ->
     case instathread_db_client:put(Entry) of
 	ok ->
 	    {ok, Entry};
-	Error ->
+	Error={error,_} ->
 	    Error
     end.
 

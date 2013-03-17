@@ -10,4 +10,16 @@
 -export([start/0]).
 
 start() ->
-    apptools:ensure_started(?MODULE, permanent).
+    apptools:ensure_started(?MODULE, permanent),
+    Dispatch = cowboy_router:compile(
+		 instathread_rest_urls:dispatch()
+		),
+    % start the dev server
+    {ok, _} = cowboy:start_http(?MODULE, 100,
+				[{port, 8000}],
+				[{env, [{dispatch, Dispatch}]}]),
+    ok.
+		     
+		     
+
+

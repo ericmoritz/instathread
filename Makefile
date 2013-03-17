@@ -1,5 +1,14 @@
-build: 
-	$(MAKE) -C apps/instathread build
+build:
+	rebar get-deps compile
 
 shell:
-	$(MAKE) -C apps/instathread shell
+	PORT=8000 erl -pa apps/*/ebin deps/*/ebin -s instathread
+
+test:
+	rebar eunit skip_deps=true
+
+clean:
+	rebar clean
+
+rel:
+	./relcool

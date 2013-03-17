@@ -1,14 +1,11 @@
-% -*- erlang -*-
-{application, instathread,
+{application, quickdraw,
  [
   {description, ""},
   {vsn, "1"},
   {registered, []},
   {applications, [
                   kernel,
-                  stdlib,
-		  apptools,
-		  instathread_web
+                  stdlib
                  ]},
   {env, []}
  ]}.
