@@ -1,19 +1,48 @@
 <!doctype html>
 <html>
+<head>
+  <style>
+    section { border: 1px solid black; margin-bottom: 10px; padding: 5px; }
+  </style>
+</head>
 <body>
-  <h1>instathread REST service</h1>
+  <section>
+    <h1>instathread</h1>
 
-  <p>
-    This is the index of the instathread REST service
-  </p>
 
-  <h2>Create Thread</h2>
-  <form class="thread-create"
-	action="/service/v1/threads/"
-	method="POST"
-	enctype="application/x-www-form-urlencoded">
-    <div><input name="author" placeholder="author"/></div>
-    <div><textarea name="body" placeholder="body"></textarea></div>
-    <div><input type="submit" value="create" /></div>
-  </form>
+    <p>Instathread is a service to enable quick ad-hoc "protected" discussion threads.</p>
+
+    <h2>How it works</h2>
+
+    <p>You create the thread, share the private URL with your friends, and
+      discuss.  The discussion is as private as the URL is so keep that in
+      mind.</p>
+
+    <h2>Why?</h2>
+
+    <p>Sometimes you need to have a quick discussion about something without
+      SPAMing your email or SPAM Twitter or Facebook with a trivial
+      conversation.  Need to discuss lunch plans? Instathread it.</p>
+
+    <h2>But what if I want to archive the conversation?</h2>
+    <p>I don't know, print it, do a save-as or use some other service.</p>
+  </section>
+
+  <section>
+    <h1>instathread REST service</h1>
+    <p>This is the index of the instathread REST service in all itsHATEOAS glory.</p>
+  </section>
+
+  <section>
+    <h1>Create Thread</h1>
+    <form class="thread-create"
+	  action="/service/v1/threads/"
+	  method="POST"
+	  enctype="application/x-www-form-urlencoded">
+      <div><input name="author" placeholder="author"/></div>
+      <div><textarea name="body" placeholder="body"></textarea></div>
+      <div><input type="submit" value="create" /></div>
+    </form>
+  </section>
 </body>
+</html>
