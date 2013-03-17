@@ -6,6 +6,7 @@
   {applications, [
                   kernel,
                   stdlib,
+                  quickdraw,
 		  instathread_rest
                  ]},
   {mod, { instathread_web_app, []}},

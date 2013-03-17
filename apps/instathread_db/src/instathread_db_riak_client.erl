@@ -91,7 +91,12 @@ put_internal(Client, Entry) ->
     NodeSet = node_set(riakc_obj:get_values(Obj)),
     NodeSet2 = sets:add_element(Entry, NodeSet),
     Obj2 = riakc_obj:update_value(Obj, term_to_binary(NodeSet2)),
-    RiakResult = riakc_pb_socket:put(Client, Obj2).
+    case riakc_pb_socket:put(Client, Obj2) of
+        {ok,_} -> ok;
+        ok -> ok;
+        E={error, _} -> E
+    end.
+            
 
 get_or_new(Client, RootKey) ->
     get_or_new(

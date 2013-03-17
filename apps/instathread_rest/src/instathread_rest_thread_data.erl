@@ -34,8 +34,8 @@ new_test() ->
     ?assertEqual(
        [
 	{rootkey, <<"100">>},
-	{thread_url, <<"/v1/threads/100">>},
-	{poll_url, <<"/v1/threads/100/poll/101">>},
+	{thread_url, <<"/service/v1/threads/100">>},
+	{poll_url, <<"/service/v1/threads/100/poll/101">>},
 	{nodes, [entry_data(EntryB)]}
        ],
       new(RootKey, Entries, Since)
@@ -44,8 +44,8 @@ new_test() ->
     ?assertEqual(
        [
 	{rootkey, <<"100">>},
-	{thread_url, <<"/v1/threads/100">>},
-	{poll_url, <<"/v1/threads/100/poll">>},
+	{thread_url, <<"/service/v1/threads/100">>},
+	{poll_url, <<"/service/v1/threads/100/poll">>},
 	{nodes, []}
        ],
       new(RootKey, Entries, Since2)
@@ -156,11 +156,11 @@ poll_url_test() ->
     [_|[Entry]] = fixture(),
 
     ?assertEqual(
-       <<"/v1/threads/100/poll">>,
+       <<"/service/v1/threads/100/poll">>,
        poll_url(<<"100">>, undefined)
       ),
     ?assertEqual(
-       <<"/v1/threads/100/poll/101">>,
+       <<"/service/v1/threads/100/poll/101">>,
        poll_url('_', Entry)
       ).
 -endif.
