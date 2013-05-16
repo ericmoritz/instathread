@@ -1,6 +1,7 @@
 % -*- erlang -*-
 -module(instathread_db_redis_client).
 -behaviour(gen_server).
+
 -define(SERVER, ?MODULE).
 
 %% ------------------------------------------------------------------
@@ -72,24 +73,18 @@ code_change(_OldVsn, State, _Extra) ->
 nodes_internal(Client, RootKey) ->
     SetKey = redis_set_key(RootKey),
     SetMembers = eredis:q(Client, [<<"ZRANGE">>, SetKey, <<"0">>, <<"-1">>]),
-    case deserialze(SetMembers) of 
-        R={ok, _} ->
-            R;
-        E={error, _} ->
-            E
-    end.
+    deserialze(SetMembers).
 
 -spec redis_set_key(binary()) -> binary().
 redis_set_key(RootKey) ->
     iolist_to_binary([<<"entries:">>, RootKey]).
 
--spec deserialze(binary())      -> {ok, instathread_db_entry:entry()};
-                (nil)             -> {error, notfound};
-                ({error, Reason}) -> {error, Reason}.
+-spec deserialze([binary()])      -> {ok, [instathread_db_entry:entry()]};
+                ({error, any()}) -> {error, any()}.
 deserialze(E={error, _}) -> E;
 deserialze({ok, []}) -> {error, notfound};
 deserialze({ok, EntryBins}) ->
-    lists:map(fun erlang:binary_to_term/1, EntryBins).
+    {ok, lists:map(fun erlang:binary_to_term/1, EntryBins)}.
 
 -spec serialize(instathread_db_entry:entry()) -> binary().
 serialize(Entry) ->

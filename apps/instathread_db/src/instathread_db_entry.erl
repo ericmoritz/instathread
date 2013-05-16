@@ -9,8 +9,10 @@
 %% API Function Exports
 %% ------------------------------------------------------------------
 -record(entry_vsn1, {properties}).
--type entry() :: #entry_vsn1{}.
 -type timestamp() :: {integer(), integer(), integer()}.
+-type key() :: binary().
+-type root_key() :: key() | undefined.
+
 -export([
     % constructor
     new/2, new/4,
@@ -32,14 +34,14 @@
 %%--------------------------------------------------------------------
 %% @doc Creates a root entry
 %%--------------------------------------------------------------------
--spec new(binary(), binary()) -> entry().
+-spec new(binary(), binary()) -> #entry_vsn1{}.
 new(Author, Body) ->
-    new(undefined, <<"">>, Author, Body).
+    new(undefined, <<>>, Author, Body).
 
 %%--------------------------------------------------------------------
 %% @doc Creates a child entry
 %%--------------------------------------------------------------------
--spec new(binary(), binary(), binary(), binary()) -> entry().
+-spec new(root_key(), key(), binary(), binary()) -> #entry_vsn1{}.
 new(RootKey, ParentKey, Author, Body) ->
     Timestamp = erlang:now(),
 
@@ -64,28 +66,28 @@ new(RootKey, ParentKey, Author, Body) ->
 %% that the schema has been migrated
 %% @end
 %%--------------------------------------------------------------------
--spec load(term()) -> entry().
+-spec load(term()) -> #entry_vsn1{}.
 load(Entry=#entry_vsn1{}) ->
     Entry.
 
 %%--------------------------------------------------------------------
 %% @doc Return the entry's key
 %%--------------------------------------------------------------------
--spec key(entry()) -> binary().
+-spec key(#entry_vsn1{}) -> binary().
 key(#entry_vsn1{properties=Props}) ->
     proplists:get_value(key, Props).
 
 %%--------------------------------------------------------------------
 %% @doc Return the entry's root key
 %%--------------------------------------------------------------------
--spec root_key(entry()) -> binary().
+-spec root_key(#entry_vsn1{}) -> binary().
 root_key(#entry_vsn1{properties=Props}) ->
     proplists:get_value(root, Props).
 
 %%--------------------------------------------------------------------
 %% @doc Return the entry's parent key
 %%--------------------------------------------------------------------
--spec parent_key(entry()) -> binary() | undefined.
+-spec parent_key(#entry_vsn1{}) -> binary() | undefined.
 parent_key(#entry_vsn1{properties=Props}) ->
     proplists:get_value(parent, Props).
 
@@ -94,7 +96,7 @@ parent_key(#entry_vsn1{properties=Props}) ->
 %% The creation data is an ISO8601 formatted string
 %% @end
 %%--------------------------------------------------------------------
--spec creation_date(entry()) -> binary().
+-spec creation_date(#entry_vsn1{}) -> binary().
 creation_date(#entry_vsn1{properties=Props}) ->
     iso8601:format(
       proplists:get_value(timestamp, Props)
@@ -105,35 +107,35 @@ creation_date(#entry_vsn1{properties=Props}) ->
 %% The creation data is an ISO8601 formatted string
 %% @end
 %%--------------------------------------------------------------------
--spec timestamp(entry()) -> timestamp().
+-spec timestamp(#entry_vsn1{}) -> timestamp().
 timestamp(#entry_vsn1{properties=Props}) ->
     proplists:get_value(timestamp, Props).
 
 %%--------------------------------------------------------------------
 %% @doc Return the entry's author
 %%--------------------------------------------------------------------
--spec author(entry()) -> binary().
+-spec author(#entry_vsn1{}) -> binary().
 author(#entry_vsn1{properties=Props}) ->
     proplists:get_value(author, Props).
 
 %%--------------------------------------------------------------------
 %% @doc Return the entry's body
 %%--------------------------------------------------------------------
--spec body(entry()) -> binary().
+-spec body(#entry_vsn1{}) -> binary().
 body(#entry_vsn1{properties=Props}) ->
     proplists:get_value(body, Props).
 
 %%--------------------------------------------------------------------
 %% @doc Set the author
 %%--------------------------------------------------------------------
--spec set_author(entry(), binary()) -> entry().
+-spec set_author(binary(), #entry_vsn1{}) -> #entry_vsn1{}.
 set_author(Author, Entry) ->
     update(Entry, author, Author).
 
 %%--------------------------------------------------------------------
 %% @doc Set the body
 %%--------------------------------------------------------------------
--spec set_body(entry(), binary()) -> entry().
+-spec set_body(binary(), #entry_vsn1{}) -> #entry_vsn1{}.
 set_body(Body, Entry) ->
     update(Entry, body, Body).
 
@@ -141,7 +143,7 @@ set_body(Body, Entry) ->
 %% ------------------------------------------------------------------
 %% Internal
 %% ------------------------------------------------------------------
--spec update(entry(), any(), any()) -> entry().
+-spec update(#entry_vsn1{}, any(), any()) -> #entry_vsn1{}.
 update(Entry=#entry_vsn1{properties=Props}, Key, Value) ->
     Props1 = [{Key, Value}|proplists:delete(Key, Props)],
     Entry#entry_vsn1{properties=Props1}.
@@ -154,7 +156,7 @@ entry_key(Timestamp, Ref) ->
 		      base64:encode(term_to_binary(Ref))
 		     ]).
 
--spec entry(binary(), binary(), timestamp(), term(), binary(), binary()) -> entry().
+-spec entry(root_key(), key(), key(), timestamp(), binary(), binary()) -> #entry_vsn1{}.
 entry(undefined, ParentKey, Key, Timestamp, Author, Body) ->
     % entries with undefined roots are roots so the root key is set to the entry's key
     entry(Key, ParentKey, Key, Timestamp, Author, Body);
