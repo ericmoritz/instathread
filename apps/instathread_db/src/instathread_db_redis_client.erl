@@ -72,7 +72,12 @@ code_change(_OldVsn, State, _Extra) ->
 nodes_internal(Client, RootKey) ->
     SetKey = redis_set_key(RootKey),
     SetMembers = eredis:q(Client, [<<"ZRANGE">>, SetKey, <<"0">>, <<"-1">>]),
-    {ok, deserialze(SetMembers)}.
+    case deserialze(SetMembers) of 
+        R={ok, _} ->
+            R;
+        E={error, _} ->
+            E
+    end.
 
 -spec redis_set_key(binary()) -> binary().
 redis_set_key(RootKey) ->
