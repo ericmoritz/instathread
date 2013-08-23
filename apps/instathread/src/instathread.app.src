@@ -8,9 +8,7 @@
                   kernel,
                   stdlib,
 		  apptools,
-		  instathread_db,
-		  instathread_subscriptions,
-		  instathread_rest
+		  instathread_web
                  ]},
   {env, []}
  ]}.

@@ -7,14 +7,15 @@
   {applications, [
                   kernel,
                   stdlib,
-                  poolboy
+                  poolboy,
+                  eredis,
+                  inets, % for http_uri
+                  iso8601,
+		  instathread_subscriptions
                  ]},
   {mod, { instathread_db_app, []}},
   {env, [
-	 {pool, {
-            [{size, 1}, {max_overflow, 1}],
-            ["127.0.0.1", 10017]
-           }
-         }
+         {client, {instathread_db_redis_client, []}},
+	 {pool, [{size, 1},{max_overflow, 1}]}
         ]}
  ]}.

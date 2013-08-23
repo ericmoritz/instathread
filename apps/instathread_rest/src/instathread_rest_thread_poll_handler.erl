@@ -8,7 +8,7 @@
 -module(instathread_rest_thread_poll_handler).
 -behaviour(cowboy_loop_handler).
 -record(state, {root_key, since}).
--export([init/3, info/3, terminate/3]).
+-export([init/3, info/3, handle/2, terminate/3]).
 
 init({tcp, http}, Req, _Opts) ->
     {RootKey, Req2} = cowboy_req:binding(root_key, Req),
@@ -27,6 +27,9 @@ init({tcp, http}, Req, _Opts) ->
     % Generate the approproate response
     data_response(HasComments, RootKey, Data, Req3, State).
     
+handle(Req, State) ->
+    {ok, Req, State}.
+
 info({thread_update, Nodes}, Req, State = #state{root_key=RootKey, since=Since}) ->
     Data = data(RootKey, Nodes, Since),
     data_response(true, RootKey, Data, Req, State).

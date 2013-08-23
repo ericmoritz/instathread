@@ -2,5 +2,6 @@
 ebin/
 deps/
 .eunit/
+_rel/
 *~
 *.dump

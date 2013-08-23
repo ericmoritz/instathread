@@ -1,4 +1,4 @@
-
+% -*- erlang -*-
 -module(instathread_web_sup).
 
 -behaviour(supervisor).
@@ -17,7 +17,9 @@
 %% ===================================================================
 
 start_link(Port) ->
-    supervisor:start_link({local, ?MODULE}, ?MODULE, [Port]).
+    Ret = supervisor:start_link({local, ?MODULE}, ?MODULE, [Port]),
+    error_logger:info_msg("Listening on port ~w~n", [Port]),
+    Ret.
 
 %% ===================================================================
 %% Supervisor callbacks
@@ -32,5 +34,6 @@ init([Port]) ->
     CowboySpec = ranch:child_spec(instathread_rest, 100, 
 				  ranch_tcp, [{port, Port}],
 				  cowboy_protocol, [{env, [{dispatch, Dispatch}]}]),
+
     {ok, { {one_for_one, 5, 10}, [CowboySpec]} }.
 
