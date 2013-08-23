@@ -4,6 +4,7 @@
   <style>
     section { border: 1px solid black; margin-bottom: 10px; padding: 5px; }
   </style>
+  <link id="thread" ref="thread" href="/service/v1/threads/{key}" />
 </head>
 <body>
   <section>
@@ -35,7 +36,7 @@
 
   <section>
     <h1>Create Thread</h1>
-    <form class="thread-create"
+    <form id="thread-create"
 	  action="/service/v1/threads/"
 	  method="POST"
 	  enctype="application/x-www-form-urlencoded">

@@ -38,7 +38,7 @@ plain_text(Req, State) ->
 
 content_types_accepted(Req, State) ->
     {[
-     {{<<"application">>, <<"x-www-form-urlencoded">>, []}, create_entry}
+     {{<<"application">>, <<"x-www-form-urlencoded">>, [{<<"charset">>,<<"UTF-8">>}]}, create_entry}
     ], Req, State}.
 
 

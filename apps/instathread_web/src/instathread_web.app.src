@@ -7,7 +7,8 @@
                   kernel,
                   stdlib,
                   quickdraw,
-		  instathread_rest
+		  instathread_rest,
+		  instathread_frontend
                  ]},
   {mod, { instathread_web_app, []}},
   {env, []}

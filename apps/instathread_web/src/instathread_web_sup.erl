@@ -28,7 +28,8 @@ start_link(Port) ->
 init([Port]) ->
     Dispatch = cowboy_router:compile(
 		 quickdraw:dispatch([
-				     instathread_rest_urls
+				     instathread_rest_urls,
+				     instathread_frontend_urls
 				    ])
 		),
     CowboySpec = ranch:child_spec(instathread_rest, 100, 
