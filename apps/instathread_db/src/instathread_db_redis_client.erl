@@ -89,7 +89,7 @@ redis_set_key(RootKey) ->
 deserialze(E={error, _}) -> E;
 deserialze({ok, []}) -> {error, notfound};
 deserialze({ok, EntryBins}) ->
-    lists:map(fun erlang:binary_to_term/1, EntryBins).
+    {ok, lists:map(fun erlang:binary_to_term/1, EntryBins)}.
 
 -spec serialize(instathread_db_entry:entry()) -> binary().
 serialize(Entry) ->
