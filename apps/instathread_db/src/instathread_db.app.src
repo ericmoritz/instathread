@@ -10,7 +10,8 @@
                   poolboy,
                   eredis,
                   inets, % for http_uri
-                  iso8601
+                  iso8601,
+		  instathread_subscriptions
                  ]},
   {mod, { instathread_db_app, []}},
   {env, [
